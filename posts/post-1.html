@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I Passed OSCP: My Journey & Lessons Learnt</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body {
+            overflow: auto;
+            height: auto;
+        }
+
+        .post-page {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 40px 28px 80px;
+        }
+
+        .post-back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-ui);
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            text-decoration: none;
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 2px;
+            margin-bottom: 40px;
+            display: inline-block;
+            transition: all 0.15s;
+        }
+
+        .post-back-link:hover {
+            color: var(--amber);
+            border-color: var(--border-hi);
+            transform: translateX(-3px);
+        }
+
+        .post-header {
+            margin-bottom: 36px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-hi);
+        }
+
+        .post-sev {
+            font-family: var(--font-ui);
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            padding: 2px 7px;
+            border-radius: 2px;
+            display: inline-block;
+            margin-bottom: 14px;
+            color: var(--amber);
+            background: var(--amber-soft);
+            border: 1px solid rgba(240,164,41,0.25);
+        }
+
+        .post-title {
+            font-family: var(--font-ui);
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.3;
+            margin-bottom: 16px;
+        }
+
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .post-date {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+
+        .post-tag {
+            font-family: var(--font-ui);
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            padding: 2px 8px;
+            border-radius: 2px;
+            color: var(--amber);
+            border: 1px solid rgba(240,164,41,0.25);
+            background: var(--amber-soft);
+        }
+
+        .post-body {
+            font-family: var(--font-mono);
+            font-size: 13.5px;
+            color: var(--text-muted);
+            line-height: 1.9;
+        }
+
+        .post-body h2 {
+            font-family: var(--font-ui);
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--blue);
+            margin: 44px 0 14px;
+            letter-spacing: 0.02em;
+        }
+
+        .post-body h3 {
+            font-family: var(--font-ui);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.08em;
+            margin: 28px 0 10px;
+            text-transform: uppercase;
+        }
+
+        .post-body p {
+            margin-bottom: 18px;
+        }
+
+        .post-body strong {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .post-body em {
+            color: var(--amber);
+            font-style: normal;
+        }
+
+        .post-body ul, .post-body ol {
+            margin: 14px 0 20px 20px;
+        }
+
+        .post-body li {
+            margin-bottom: 8px;
+            color: var(--text-muted);
+        }
+
+        .post-body code {
+            background: var(--purple-soft);
+            color: var(--purple);
+            padding: 1px 5px;
+            border-radius: 2px;
+            font-size: 12px;
+        }
+
+        .post-body pre {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-left: 2px solid var(--amber);
+            padding: 18px 20px;
+            border-radius: 3px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        .post-body pre code {
+            background: none;
+            color: var(--text-primary);
+            padding: 0;
+        }
+
+        .post-body a {
+            color: var(--blue);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(90,173,255,0.3);
+            transition: 0.15s;
+        }
+
+        .post-body a:hover {
+            color: var(--amber);
+            border-color: rgba(240,164,41,0.4);
+        }
+
+        .post-body blockquote {
+            border-left: 2px solid var(--amber);
+            padding: 10px 0 10px 18px;
+            margin: 24px 0;
+            color: var(--text-dim);
+            font-style: italic;
+        }
+
+        .post-body .callout {
+            background: var(--amber-soft);
+            border: 1px solid rgba(240,164,41,0.2);
+            border-left: 3px solid var(--amber);
+            border-radius: 3px;
+            padding: 14px 18px;
+            margin: 24px 0;
+            font-size: 13px;
+        }
+
+        .post-footer {
+            margin-top: 56px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            font-family: var(--font-ui);
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+    </style>
+</head>
+<body>
+    <div class="post-page">
+
+        <a href="../index.html" class="post-back-link">← back to stream</a>
+
+        <header class="post-header">
+            <div class="post-sev">ACHIEVE</div>
+            <h1 class="post-title">I Passed OSCP: My Journey & Lessons Learnt</h1>
+            <div class="post-meta">
+                <span class="post-date">2024-XX-XX</span>
+                <span class="post-tag">CERTS</span>
+                <span class="post-tag">OSCP</span>
+                <span class="post-tag">OFFSEC</span>
+            </div>
+        </header>
+
+        <div class="post-body">
+
+            <p>Hi everyone! I'm excited to share that I've managed to pass my <strong>OffSec Certified Professional (OSCP)</strong> exam. I was from Singapore Polytechnic's Diploma in Infocomm Security Management, and I previously took certifications such as the Certified Ethical Hacker and eJPT due to my interest in the penetration testing field.</p>
+
+            <div class="callout">
+                <strong>TLDR:</strong> I managed to pass OSCP with <em>70 points</em> — decided to call it a day upon hitting the points requirement to thoroughly review the screenshots &amp; documentation.
+            </div>
+            <img src="../images/post1/1.webp" alt="cert">
+
+            <p>Listening to all the stories about people struggling to pass the exam within 24 hours left me feeling a mix of nervous anticipation and dread, but it also seemed like an exciting challenge.</p>
+
+            <h2>The Journey</h2>
+
+            <p>In order to prepare for the OSCP, I dedicated hours to practicing on platforms like <strong>TryHackMe</strong>, <strong>HackTheBox</strong>, and <strong>OffSec's Proving Grounds</strong>. Each machine I tackled taught me something new — whether it was refining my enumeration techniques, sharpening my skills, or identifying privilege escalation vectors. The key to success, I found, was consistency and perseverance.</p>
+
+            <p>Every machine has its own vulnerabilities; one can never be "fully prepared" for the OSCP. However, the takeaways from practicing numerous machines, and honing the "try harder" mindset was vital in passing the exam.</p>
+            <img src="../images/post1/2.webp" alt="notion">
+
+            <p>In preparation for the OSCP, I utilised the <strong>Lainkusanagi OSCP Like</strong> list of machines. This is a list of machines similar to TJNull's list, but with a slight difference. It is a good idea to keep a repository of pwned machines to easily revise the learning points of each practice. Whenever you learn something new, immediately add it to your current methodology.</p>
+
+            <h2>Judgement Day</h2>
+
+            <p>I started my exam at around <strong>10AM</strong>; joined the proctor at 9.45AM, and managed to get the verification and setup of proctor software out of the way in 15 minutes.</p>
+
+            <p>I started off with the <strong>AD set first</strong>, as it has the most weightage (40 points). My strategy going into this exam was to pwn the AD Set (40 Points) + 1 Standalone (10 Points), as I already had 10 bonus points from completing the lab exercises.</p>
+
+            <p>Around 2 hours into the exam, I managed to get initial access into the AD Set. Pivoting was the toughest part — it held me back another 2 hours. However, upon careful and thorough enumeration, I was able to get hold of the necessary credentials needed to gain root on the Domain Controller.</p>
+
+            <img src="../images/post1/3.webp" alt="cert">
+
+            <p>For standalone sets, I briefly enumerated each machine using <code>RustScan</code>. I then decided to attack Standalone 2 first, as I'm more familiar with some of the services running. Personally, the standalone sets were the hardest (harder than the AD set) to pwn. It took me around 5–6 hours to gain initial access, and another 30 minutes on privilege escalation.</p>
+
+            <blockquote>In total, I spent around ±12 hours for 1 AD Set + 1 Standalone Machine.</blockquote>
+
+            <h2>My Methodology</h2>
+
+            <p>Throughout the journey, I adhered to a methodical approach. I won't deep dive into the different phases (Enumeration → Initial Exploit → Post Enum → Privesc/Pivot → Post Enum), but it is important to note that you should have a checklist to ensure that you don't miss out anything.</p>
+
+            <p>For example, my <strong>Windows Lateral Movement Checklist</strong>: upon obtaining a pair of valid credentials, or whenever I suspect a particular string may be a potential password, I perform a <code>NetExec</code> spray across open services:</p>
+            <img src="../images/post1/4.webp" alt="cert">
+            <ul>
+                <li>SMB</li>
+                <li>WinRM</li>
+                <li>RDP</li>
+                <li>SSH</li>
+                <li>MSSQL</li>
+                <li>FTP</li>
+            </ul>
+            <img src="../images/post1/5.webp" alt="cert">
+
+            <p>Documentation was another critical aspect. Keeping detailed notes and screenshots serves as a valuable reference when you redo the machines again and when writing the final report.</p>
+
+            <h2>Useful Resources</h2>
+
+            <p>The first tool that comes to mind is definitely <strong>Ligolo</strong>.</p>
+
+            <img src="../images/post1/6.webp" alt="cert">
+
+            <blockquote>Ligolo is a lightweight, user-friendly tool used for creating reverse tunnels, enabling users to establish secure connections back to their own machines from compromised systems.</blockquote>
+
+            <p>As opposed to setting up manual tunnels, Ligolo is particularly useful when pivoting in an Active Directory network. Highly recommend everyone to learn this tool — it can make your life very easy during the exam.</p>
+
+            <p>Another tool I used was <strong>ConPtyShell</strong>; using this tool, I was able to obtain a fully interactive reverse shell for Windows systems. I'd recommend using ConPtyShell on machines that you plan to run Ligolo on — this will make your life easier, as you will not need to keep spawning your original netcat reverse shell listener whenever the Ligolo agent dies.</p>
+
+            <img src="../images/post1/7.webp" alt="cert">
+            <img src="../images/post1/8.webp" alt="cert">
+
+            <p>The machines that resemble the actual OSCP exam the most are the <strong>OSCP A/B/C set</strong>. Ensure that you understand the key concepts in pivoting on the Active Directory set, since it is one of the most important aspects of the exam (weightage of 40 points).</p>
+
+            <p>Last but not least, I highly recommend the note-taking app <strong>Obsidian</strong>. You can easily search for specific keywords in your entire vault — an important feature if you want to quickly find previous examples from other machines you've pwned. For example, searching for <code>sqli</code> will pull up every machine where you've used SQL Injection as an exploit vector.</p>
+
+            <h2>Main Takeaways & Parting Comments</h2>
+
+            <p>One last thing I want to share — not just for the OSCP certification but for anything we do in life — is the importance of these two principles: <em>Murphy's Law</em> and <em>KISS</em>.</p>
+
+            <h3>Murphy's Law</h3>
+
+            <p>Murphy's Law states: <strong>"Anything that can go wrong, will go wrong."</strong> It emphasises that if there is a possibility for something to go wrong, it likely will — often at the worst possible time.</p>
+
+            <p>It is always, always important to fully understand and grasp a concept before moving on. The "aiyah, where got so suey, it won't come out" mentality can lead to unforeseen consequences. Murphy's Law teaches us to never underestimate the potential for things to go wrong — to prepare thoroughly and consider all possible outcomes, no matter how unlikely they may seem.</p>
+
+            <p>So the next time you're tempted to skip over a detail, remember Murphy's Law. It's not about being pessimistic; it's about being prepared, meticulous, and always expecting the unexpected.</p>
+
+            <h3>KISS (Keep It Simple, Stupid)</h3>
+
+            <p>The KISS principle emphasises simplicity and avoiding unnecessary complexity. By keeping things simple, you reduce the likelihood of errors, make solutions more robust, and improve usability.</p>
+
+            <p>In the heat of the exam, it's easy to get caught up in trying advanced techniques. However, more often than not, the simplest solution is the most effective. Some examples:</p>
+
+            <ul>
+                <li>Instead of blindly trying exploits, have you thought about what services or ports are open/closed?</li>
+                <li>Instead of resorting to brute force, have you tried default or simple credentials such as <code>admin:admin</code> or <code>admin:password</code>?</li>
+            </ul>
+
+            <p>By keeping things simple, you not only improve your chances of success on the exam but also develop a more robust and reliable pentesting methodology for the real world.</p>
+
+            <hr style="border:none; border-top: 1px solid var(--border); margin: 40px 0;">
+
+            <p>I hope this post has helped and inspired other likeminded cybersecurity enthusiasts preparing for the exam.</p>
+
+            <p>Last but not least, this certification would not have been possible without the encouragement and inspiration of my Polytechnic lecturer <strong>Mr Boris</strong>, as well as my mentors from my previous internship company, friends, and fellow peers. Huge thank you to everyone that has been a part of my journey! :)</p>
+
+        </div>
+
+        <footer class="post-footer">
+            benchmeister · /var/log/posts · <a href="../index.html">← back to stream</a>
+        </footer>
+
+    </div>
+</body>
+</html>

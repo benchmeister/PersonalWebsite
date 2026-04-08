@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Post Title Here</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        /* Post-specific styles */
+        .post-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .post-header {
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--accent-cyan);
+        }
+
+        .post-back {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-block;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .post-back:hover {
+            color: var(--accent-pink);
+            transform: translateX(-5px);
+        }
+
+        .post-title {
+            color: var(--accent-green);
+            font-size: 32px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px rgba(57, 255, 20, 0.6);
+        }
+
+        .post-meta {
+            display: flex;
+            gap: 20px;
+            color: var(--text-dim);
+            font-size: 13px;
+        }
+
+        .post-date {
+            color: var(--accent-cyan);
+        }
+
+        .post-category {
+            color: var(--accent-pink);
+        }
+
+        .post-content {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 14px;
+        }
+
+        .post-content h2 {
+            color: var(--accent-cyan);
+            font-size: 24px;
+            margin: 40px 0 20px 0;
+            text-shadow: 0 0 10px var(--glow-cyan);
+        }
+
+        .post-content h3 {
+            color: var(--accent-purple);
+            font-size: 20px;
+            margin: 30px 0 15px 0;
+        }
+
+        .post-content p {
+            margin-bottom: 20px;
+        }
+
+        .post-content ul, .post-content ol {
+            margin: 20px 0;
+            padding-left: 30px;
+        }
+
+        .post-content li {
+            margin-bottom: 10px;
+        }
+
+        .post-content code {
+            background: rgba(0, 255, 159, 0.1);
+            color: var(--accent-cyan);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .post-content pre {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--accent-purple);
+            border-left: 3px solid var(--accent-cyan);
+            padding: 20px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        .post-content pre code {
+            background: none;
+            padding: 0;
+        }
+
+        .post-content a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--accent-cyan);
+            transition: all 0.3s ease;
+        }
+
+        .post-content a:hover {
+            color: var(--accent-pink);
+            border-bottom-color: var(--accent-pink);
+        }
+
+        .post-content blockquote {
+            border-left: 3px solid var(--accent-purple);
+            padding-left: 20px;
+            margin: 20px 0;
+            font-style: italic;
+            color: var(--text-dim);
+        }
+
+        .post-content img {
+            max-width: 100%;
+            border-radius: 8px;
+            border: 1px solid var(--accent-purple);
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="post-container">
+        <a href="../index.html" class="post-back">← Back to Posts</a>
+
+        <article class="post-article">
+            <header class="post-header">
+                <!-- EDIT THIS: Your post title -->
+                <h1 class="post-title">Your Post Title Here</h1>
+
+                <div class="post-meta">
+                    <!-- EDIT THIS: Date in YYYY-MM-DD format -->
+                    <span class="post-date">2024-01-01</span>
+
+                    <!-- EDIT THIS: Category like [ctf], [research], [projects], etc -->
+                    <span class="post-category">[category]</span>
+                </div>
+            </header>
+
+            <!--
+                WRITE YOUR CONTENT BELOW THIS LINE
+
+                Available HTML tags:
+                - <h2>Main Section</h2>
+                - <h3>Subsection</h3>
+                - <p>Paragraph text</p>
+                - <ul><li>Bullet point</li></ul>
+                - <ol><li>Numbered list</li></ol>
+                - <pre><code>Code block</code></pre>
+                - <code>Inline code</code>
+                - <a href="url">Link</a>
+                - <strong>Bold text</strong>
+                - <em>Italic text</em>
+                - <blockquote>Quote</blockquote>
+                - <img src="path/to/image.jpg" alt="description">
+            -->
+            <div class="post-content">
+                <h2>Introduction</h2>
+                <p>
+                    Start writing your blog post here. Replace this text with your content.
+                </p>
+
+                <h2>Main Content</h2>
+                <p>
+                    Add your main content here. You can use multiple paragraphs, code blocks, lists, etc.
+                </p>
+
+                <h3>Subsection Example</h3>
+                <p>Here's an example of a subsection with a list:</p>
+                <ul>
+                    <li>First point</li>
+                    <li>Second point</li>
+                    <li>Third point</li>
+                </ul>
+
+                <h3>Code Example</h3>
+                <p>Here's how to add a code block:</p>
+                <pre><code># Example code
+def hello_world():
+    print("Hello, World!")
+
+hello_world()</code></pre>
+
+                <p>
+                    You can also use <code>inline code</code> like this.
+                </p>
+
+                <h2>Conclusion</h2>
+                <p>
+                    Wrap up your post with a conclusion.
+                </p>
+            </div>
+        </article>
+    </div>
+
+    <script src="../script.js"></script>
+</body>
+</html>
