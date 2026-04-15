@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Why UNC3886 Is So Hard to Detect (And What It Teaches Us)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        body {
+            overflow: auto;
+            height: auto;
+        }
+
+        .post-page {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 40px 28px 80px;
+        }
+
+        .post-back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font-ui);
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            text-decoration: none;
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 2px;
+            margin-bottom: 40px;
+            display: inline-block;
+            transition: all 0.15s;
+        }
+
+        .post-back-link:hover {
+            color: var(--amber);
+            border-color: var(--border-hi);
+            transform: translateX(-3px);
+        }
+
+        .post-header {
+            margin-bottom: 36px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border-hi);
+        }
+
+        .post-sev {
+            font-family: var(--font-ui);
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            padding: 2px 7px;
+            border-radius: 2px;
+            display: inline-block;
+            margin-bottom: 14px;
+            color: var(--amber);
+            background: var(--amber-soft);
+            border: 1px solid rgba(240,164,41,0.25);
+        }
+
+        .post-title {
+            font-family: var(--font-ui);
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.3;
+            margin-bottom: 16px;
+        }
+
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .post-date {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+
+        .post-tag {
+            font-family: var(--font-ui);
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            padding: 2px 8px;
+            border-radius: 2px;
+            color: var(--amber);
+            border: 1px solid rgba(240,164,41,0.25);
+            background: var(--amber-soft);
+        }
+
+        .post-body {
+            font-family: var(--font-mono);
+            font-size: 13.5px;
+            color: var(--text-muted);
+            line-height: 1.9;
+        }
+
+        .post-body h2 {
+            font-family: var(--font-ui);
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--blue);
+            margin: 44px 0 14px;
+            letter-spacing: 0.02em;
+        }
+
+        .post-body h3 {
+            font-family: var(--font-ui);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 0.08em;
+            margin: 28px 0 10px;
+            text-transform: uppercase;
+        }
+
+        .post-body p {
+            margin-bottom: 18px;
+        }
+
+        .post-body strong {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .post-body em {
+            color: var(--amber);
+            font-style: normal;
+        }
+
+        .post-body ul, .post-body ol {
+            margin: 14px 0 20px 20px;
+        }
+
+        .post-body li {
+            margin-bottom: 8px;
+            color: var(--text-muted);
+        }
+
+        .post-body code {
+            background: var(--purple-soft);
+            color: var(--purple);
+            padding: 1px 5px;
+            border-radius: 2px;
+            font-size: 12px;
+        }
+
+        .post-body pre {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-left: 2px solid var(--amber);
+            padding: 18px 20px;
+            border-radius: 3px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        .post-body pre code {
+            background: none;
+            color: var(--text-primary);
+            padding: 0;
+        }
+
+        .post-body a {
+            color: var(--blue);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(90,173,255,0.3);
+            transition: 0.15s;
+        }
+
+        .post-body a:hover {
+            color: var(--amber);
+            border-color: rgba(240,164,41,0.4);
+        }
+
+        .post-body blockquote {
+            border-left: 2px solid var(--amber);
+            padding: 10px 0 10px 18px;
+            margin: 24px 0;
+            color: var(--text-dim);
+            font-style: italic;
+        }
+
+        .post-body .callout {
+            background: var(--amber-soft);
+            border: 1px solid rgba(240,164,41,0.2);
+            border-left: 3px solid var(--amber);
+            border-radius: 3px;
+            padding: 14px 18px;
+            margin: 24px 0;
+            font-size: 13px;
+        }
+
+        .post-body img {
+            max-width: 100%;
+            border-radius: 3px;
+            margin: 20px 0;
+            display: block;
+        }
+
+        .post-footer {
+            margin-top: 56px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            font-family: var(--font-ui);
+            font-size: 12px;
+            color: var(--text-dim);
+        }
+
+        .step-label {
+            font-family: var(--font-ui);
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: var(--blue);
+            background: rgba(90,173,255,0.08);
+            border: 1px solid rgba(90,173,255,0.2);
+            padding: 2px 8px;
+            border-radius: 2px;
+            display: inline-block;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="post-page">
+
+        <a href="../index.html" class="post-back-link">← back to stream</a>
+
+        <header class="post-header">
+            <div class="post-sev">THREAT INTEL</div>
+            <h1 class="post-title">Why UNC3886 Is So Hard to Detect (And What It Teaches Us)</h1>
+            <div class="post-meta">
+                <span class="post-date">2026-04-15</span>
+                <span class="post-tag">THREAT INTEL</span>
+                <span class="post-tag">APT</span>
+                <span class="post-tag">MCP</span>
+            </div>
+        </header>
+
+        <div class="post-body">
+
+            <p>As someone with a keen interest in threat hunting and threat intelligence, I've always been curious about how AI can deepen the quality of intelligence gathering — not just as a search assistant, but as an active analyst. In this post, I'll be using <strong>Claude Code</strong> with <strong>MCP-ThreatIntel</strong> integration to analyse <em>UNC3886</em>, a highly sophisticated Chinese-linked APT group, and demonstrate what AI-assisted threat intelligence analysis actually looks like in practice.</p>
+
+            <div class="callout">
+                <strong>TLDR:</strong> UNC3886 is a stealthy, hypervisor-level APT that weaponises virtualisation blind spots. We'll break down their full attack chain using AI-assisted threat intel via MCP.
+            </div>
+
+            <h2>Understanding What MCP Is</h2>
+
+            <p>Before we dive into the threat actor, it's worth understanding the tooling. <strong>Model Context Protocol (MCP)</strong> is a framework that allows AI systems to directly interact with external tools, APIs, and datasets — instead of relying on manual copy-paste workflows.</p>
+
+            <p>The traditional workflow for a threat analyst looks something like this: open a browser, search VirusTotal, copy the results, paste into your LLM, ask a question, go back and search another feed, repeat. It's tedious, fragmented, and slow.</p>
+
+            <p>With MCP, that entire loop collapses. The AI queries threat feeds directly, aggregates the data, and produces actionable analysis — all within a single prompt.</p>
+
+            <h2>Using MCP-ThreatIntel by Pete-Builds</h2>
+
+            <p><strong>MCP-ThreatIntel</strong> is an open-source project that integrates cyber threat intelligence directly into AI workflows, allowing an AI assistant to behave like a real threat analyst. Here's how the workflow is structured:</p>
+
+            <ol>
+                <li><strong>LLM Tool Invocation</strong> — The LLM identifies intent and calls a registered MCP tool</li>
+                <li><strong>MCP Server Dispatch</strong> — The MCP server receives the request and maps it to a specific handler</li>
+                <li><strong>Data Retrieval Layer</strong> — Queries a local SQLite cache and external APIs (VirusTotal, OTX, etc.)</li>
+                <li><strong>Aggregation &amp; Structuring</strong> — Results are normalised and returned as structured JSON</li>
+                <li><strong>LLM Reasoning Layer</strong> — The LLM generates contextual analysis from the structured output</li>
+            </ol>
+
+            <h2>Using MCP In Claude Code</h2>
+
+            <p>With MCP integrated into <strong>Claude Code</strong>, you can prompt it to generate a full threat intelligence report — with data aggregated from intelligence vendors via APIs and open source blog posts — without ever leaving your terminal.</p>
+
+            <img src="../images/post2/image1.png" alt="Claude Code MCP threat intel query">
+
+            <p>The result is a seamless analyst experience: ask a question, get a structured, sourced answer. No tab-switching. No manual correlation. This is the foundation for what we'll do next — querying UNC3886.</p>
+
+            <img src="../images/post2/image4.png" alt="Compiled threat intel report output in Claude Code">
+
+            <h2>Who is UNC3886?</h2>
+
+            <p><strong>UNC3886</strong> is a suspected Chinese-linked APT group first detected by Mandiant in 2021–2022. Unlike noisier threat actors that rely on phishing or commodity malware, UNC3886 operates with surgical precision — targeting network edge devices and virtualisation infrastructure to maintain persistent, long-term access with minimal detection footprint.</p>
+
+            <p>Their tradecraft is particularly notable for two reasons: they exploit <em>hypervisor-level blind spots</em> that most EDR solutions simply don't cover, and they abuse trusted third-party services (GitHub, Google Drive) for command-and-control to blend into normal enterprise traffic.</p>
+
+            <h2>Key Attack Chain</h2>
+
+            <img src="../images/post2/image7.png" alt="UNC3886 attack chain overview">
+
+            <h3>Step 1 — Initial Foothold on Network Edge Router</h3>
+
+            <p>UNC3886 gained initial access by exploiting <strong>CVE-2022-42475</strong>, a heap buffer overflow vulnerability in <strong>Fortinet FortiOS SSL-VPN</strong>. This is a pre-authentication RCE on perimeter devices — meaning they're in before any credential is involved.</p>
+
+            <p>Targeting the network edge is a deliberate choice. Perimeter devices are frequently excluded from EDR coverage, have limited logging visibility, and are trusted implicitly by the rest of the network.</p>
+
+            <img src="../images/post2/image6.png" alt="CVE-2022-42475 FortiGuard IOCs and artifacts">
+            <img src="../images/post2/image2.png" alt="CVE-2022-42475 incident analysis telltales">
+
+            <h3>Step 2 — Targeting vCenter Server</h3>
+
+            <p>Once inside the network, the group pivoted to <strong>VMware vCenter Server</strong> using two CVEs in combination:</p>
+
+            <ul>
+                <li><strong>CVE-2023-34048</strong> — An out-of-bounds write in vCenter's DCERPC protocol, enabling unauthenticated remote code execution on the management plane</li>
+                <li><strong>CVE-2022-22948</strong> — Incorrect file permissions on the vCenter appliance, allowing an attacker to read sensitive files including credential stores</li>
+            </ul>
+
+            <p>Compromising vCenter is a force multiplier. A single vCenter instance typically manages dozens to hundreds of ESXi hosts — taking it gives the attacker keys to the entire virtualised estate.</p>
+
+            <h3>Step 3 — Harvesting vpxuser Credentials</h3>
+
+            <p>vCenter Server ships with three built-in service accounts: <code>root</code>, <code>dcui</code> (direct console), and <code>vpxuser</code> (the vCenter administration account used to authenticate to every ESXi host it manages).</p>
+
+            <p>UNC3886 extracted <strong>cleartext <code>vpxuser</code> credentials</strong> directly from the vCenter database. With these credentials, they could authenticate to every ESXi host under that vCenter instance — not to guest VMs directly, but to the hypervisor layer itself.</p>
+
+            <blockquote>This is a critical distinction: hypervisor-level access doesn't automatically mean guest VM access — but it is the prerequisite for the next step.</blockquote>
+
+            <img src="../images/post2/image9.png" alt="vpxuser credential extraction from vCenter database">
+
+            <h3>Step 4 — Deploying Malicious VIB Implants for Persistence on ESXi Hosts</h3>
+
+            <p>To establish persistent access on the hypervisor, UNC3886 deployed malicious <strong>vSphere Installation Bundles (VIBs)</strong> — VMware's native software packaging format. Because VIBs are installed at the hypervisor level, they survive guest VM reboots and are invisible to any endpoint security running inside the VMs.</p>
+
+            <p>Two custom implants were deployed:</p>
+
+            <ul>
+                <li><strong>VIRTUALPITA</strong> — A 64-bit passive backdoor that creates hardcoded port listeners on the ESXi host. It masquerades as legitimate VMware services and disables command history logging to cover its tracks.</li>
+                <li><strong>VIRTUALPIE</strong> — A lightweight Python backdoor that spawns IPv6 listeners with arbitrary command execution, file transfer, and reverse shell capabilities. Communications are encrypted using a custom RC4-based protocol.</li>
+            </ul>
+
+            <img src="../images/post2/image8.png" alt="VIRTUALPITA and VIRTUALPIE VIB implants on ESXi">
+
+            <h3>Step 5 — Exploiting Guest VMs via CVE-2023-20867</h3>
+
+            <p>With persistent hypervisor access established, UNC3886 leveraged <strong>CVE-2023-20867</strong> — a VMware Tools vulnerability — to execute privileged operations on guest VMs <em>without authentication</em>.</p>
+
+            <p>The requirements for this exploit are: privileged access to the ESXi host (already achieved via VIRTUALPITA/VIRTUALPIE) and VMware Tools installed on the target guest VM (the default configuration for most enterprise deployments).</p>
+
+            <blockquote>The guest VM has no visibility into what the hypervisor layer is doing. There are no logs, no alerts, no indicators — from the VM's perspective, nothing happened.</blockquote>
+
+            <h3>Step 6 — Data Harvesting &amp; Lateral Movement</h3>
+
+            <p>With guest VM access now established, the final phase involved credential harvesting and lateral movement across the environment:</p>
+
+            <ul>
+                <li>Dumped credentials from <strong>LSASS memory</strong> via <code>Rundll32</code></li>
+                <li>Staged exfiltration files as compressed archives named with the pattern <code>ldapd&lt;keyword&gt;.2.gz</code></li>
+                <li>Deployed additional malware families for lateral movement and C2 (detailed in the next section)</li>
+            </ul>
+
+            <img src="../images/post2/image3.png" alt="Lateral movement artifacts — PITHOOK and LOOKOVER">
+            <img src="../images/post2/image5.png" alt="Lateral movement artifacts continued">
+
+            <h2>Defense Evasion — Why This Group Is So Hard to Catch</h2>
+
+            <p>UNC3886's most sophisticated capability isn't a zero-day — it's their <em>operational security</em>. They chain legitimate tools with custom malware and route C2 traffic through trusted cloud services, making it extremely difficult to distinguish malicious traffic from normal enterprise activity.</p>
+
+            <h3>MOPSLED</h3>
+
+            <p><strong>MOPSLED</strong> is a backdoor that communicates over HTTP or a custom binary protocol. Linux variants were deployed on vCenter servers. To obtain its C2 address, MOPSLED issues an HTTP GET request to a <strong>GitHub</strong> repository, then decrypts the response using the <strong>ChaCha20</strong> stream cipher to retrieve the actual C2 endpoint.</p>
+
+            <p>From a defender's perspective, this looks like legitimate traffic to GitHub — a domain that is almost universally allowlisted in enterprise environments.</p>
+
+            <h3>RIFLESPINE</h3>
+
+            <p><strong>RIFLESPINE</strong> takes a similar approach, but routes its entire C2 channel through <strong>Google Drive</strong>. The full command execution workflow:</p>
+
+            <ol>
+                <li>Execute <code>gdrive</code> to obtain target-specific files from a controlled Drive folder</li>
+                <li>Write the filename to a temporary file</li>
+                <li>Download matching files to <code>/tmp</code></li>
+                <li>Decrypt using <strong>CryptoPP AES-CBC</strong> with pre-shared keys</li>
+                <li>Read decrypted file for execution instructions</li>
+                <li>Execute commands and write output to a temporary file</li>
+                <li>Encrypt the response using the same AES keys</li>
+                <li>Upload the encrypted response back via <code>gdrive</code></li>
+                <li>Delay and repeat</li>
+            </ol>
+
+            <p>Again — this is all Google Drive traffic. Encrypted, authenticated, and almost impossible to block without also breaking legitimate productivity tooling. This is the design intent: abuse trusted infrastructure to make detection cost-prohibitive.</p>
+
+            <hr style="border:none; border-top: 1px solid var(--border); margin: 40px 0;">
+
+            <p>UNC3886 is a masterclass in operating below the detection threshold. By targeting the hypervisor layer — a blind spot for virtually all endpoint security products — and routing C2 through GitHub and Google Drive, they engineered an intrusion that could persist undetected for years in a typical enterprise environment.</p>
+
+            <p>What AI-assisted threat intelligence like MCP-ThreatIntel gives us is speed and coverage: the ability to correlate CVEs, malware families, TTPs, and IOCs across multiple feeds in seconds rather than hours. That matters, because against an adversary like UNC3886, the only way to win is to reduce your mean time to detect.</p>
+
+        </div>
+
+        <footer class="post-footer">
+            benchmeister · /var/log/posts · <a href="../index.html">← back to stream</a>
+        </footer>
+
+    </div>
+</body>
+</html>
