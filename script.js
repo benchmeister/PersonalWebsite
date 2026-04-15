@@ -23,6 +23,21 @@ document.querySelectorAll('.feed-entry .feed-ts').forEach(ts => {
 });
 if (latestEl && latestDisplay) latestEl.textContent = latestDisplay;
 
+// ─── Floating back button (visible while reading a post inline) ──
+const backBtnFloat = document.createElement('button');
+backBtnFloat.className = 'back-btn-float';
+backBtnFloat.textContent = '← back to stream';
+document.body.appendChild(backBtnFloat);
+backBtnFloat.addEventListener('click', () => {
+    document.getElementById('post-view').style.display  = 'none';
+    document.getElementById('index-view').style.display = 'block';
+    document.getElementById('panel-feed').scrollTop = 0;
+    document.querySelector('.toc-float')?.remove();
+    document.querySelector('.toc-sidebar')?.remove();
+    document.querySelector('.toc-layout-active')?.classList.remove('toc-layout-active');
+    backBtnFloat.style.display = 'none';
+});
+
 // ─── Inline post loader ──────────────────────────────────────────
 function loadPost(url) {
     const indexView = document.getElementById('index-view');
@@ -34,6 +49,7 @@ function loadPost(url) {
     indexView.style.display = 'none';
     postView.style.display  = 'block';
     panelFeed.scrollTop = 0;
+    backBtnFloat.style.display = 'block';
 
     fetch(url)
         .then(r => {
@@ -52,6 +68,16 @@ function loadPost(url) {
             // Wrap in .post-page so its padding/max-width CSS applies
             container.innerHTML = '<div class="post-page">' + postPage.innerHTML + '</div>';
             panelFeed.scrollTop = 0;
+
+            // Build TOC — inline box in 3-panel view, floating sidebar on direct pages
+            if (typeof window.initTOC === 'function') {
+                window.initTOC(panelFeed);
+            } else {
+                const s = document.createElement('script');
+                s.src = 'toc.js';
+                s.onload = () => window.initTOC(panelFeed);
+                document.body.appendChild(s);
+            }
         })
         .catch(() => {
             container.innerHTML = '<p style="color:var(--text-muted);padding:32px 28px;">Could not load post — make sure the file exists in posts/.</p>';
@@ -63,6 +89,11 @@ document.getElementById('back-to-index').addEventListener('click', () => {
     document.getElementById('post-view').style.display  = 'none';
     document.getElementById('index-view').style.display = 'block';
     document.getElementById('panel-feed').scrollTop = 0;
+    // Remove TOC when leaving post view
+    document.querySelector('.toc-float')?.remove();
+    document.querySelector('.toc-sidebar')?.remove();
+    document.querySelector('.toc-layout-active')?.classList.remove('toc-layout-active');
+    backBtnFloat.style.display = 'none';
 });
 
 // ─── Feed-read click handler ─────────────────────────────────────
