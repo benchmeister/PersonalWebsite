@@ -702,7 +702,7 @@ body {
     text-transform: none;
 }
 
-.post-body p    { margin-bottom: 14px; }
+.post-body p    { margin-bottom: 14px; text-align: justify; }
 .post-body strong { color: var(--text-primary); font-weight: bold; }
 .post-body em   { color: var(--blue); font-style: italic; }
 

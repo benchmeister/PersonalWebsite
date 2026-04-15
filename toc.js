@@ -29,9 +29,9 @@
                ═══════════════════════════════════════════════════════ */
             .toc-layout-active {
                 display: grid;
-                grid-template-columns: 1fr 185px;
-                column-gap: 20px;
-                max-width: 1000px !important;
+                grid-template-columns: 1fr 160px;
+                column-gap: 14px;
+                max-width: calc(100% - 20px) !important;
                 align-items: start;
             }
 
@@ -54,6 +54,7 @@
                 position: sticky;
                 top: 35vh;
                 align-self: start;
+                width: 160px;
                 max-height: 55vh;
                 overflow-y: auto;
                 background: var(--bg-panel, #d4d0c8);
@@ -94,9 +95,8 @@
                 padding: 3px 2px;
                 line-height: 1.4;
                 transition: background 0.1s;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
+                white-space: normal;
+                word-break: break-word;
             }
 
             .toc-link:hover {
