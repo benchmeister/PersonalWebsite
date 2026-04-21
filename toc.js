@@ -16,9 +16,9 @@
                 width: 200px;
                 max-height: 65vh;
                 overflow-y: auto;
-                background: var(--bg-panel, #d4d0c8);
-                box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff,
-                            inset -2px -2px #808080, inset 2px 2px #dfdfdf;
+                background: var(--bg-panel, #0d1929);
+                border: 1px solid rgba(125,211,252,0.14);
+                border-radius: 4px;
                 z-index: 200;
                 scrollbar-width: thin;
             }
@@ -52,14 +52,14 @@
                 grid-column: 2;
                 grid-row: 2;
                 position: sticky;
-                top: 35vh;
+                top: 12px;
                 align-self: start;
                 width: 160px;
                 max-height: 55vh;
                 overflow-y: auto;
-                background: var(--bg-panel, #d4d0c8);
-                box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff,
-                            inset -2px -2px #808080, inset 2px 2px #dfdfdf;
+                background: var(--bg-panel, #0d1929);
+                border: 1px solid rgba(125,211,252,0.14);
+                border-radius: 4px;
                 scrollbar-width: thin;
             }
 
@@ -67,61 +67,62 @@
                Shared TOC content styles
                ═══════════════════════════════════════════════════════ */
             .toc-title {
-                font-family: Arial, 'Tahoma', sans-serif;
-                font-size: 11px;
-                font-weight: bold;
-                color: #ffffff;
-                background: linear-gradient(to right, #000080, #1084d0);
-                padding: 3px 8px;
+                font-family: 'JetBrains Mono', 'Courier New', monospace;
+                font-size: 9px;
+                font-weight: 500;
+                color: var(--teal, #2dd4bf);
+                background: var(--bg-panel-alt, #091422);
+                border-bottom: 1px solid rgba(125,211,252,0.14);
+                padding: 6px 10px;
                 display: block;
-                letter-spacing: 0.04em;
+                letter-spacing: 0.14em;
+                text-transform: uppercase;
             }
 
             .toc-list {
                 list-style: none;
                 margin: 0;
-                padding: 4px 8px 8px;
+                padding: 5px 8px 8px;
             }
 
             .toc-item { margin: 0; }
 
             .toc-link {
                 display: block;
-                font-family: Arial, 'Tahoma', sans-serif;
-                font-size: 12px;
-                color: #000080;
-                text-decoration: underline;
+                font-family: 'JetBrains Mono', 'Courier New', monospace;
+                font-size: 11px;
+                color: var(--text-muted, #7ea8c9);
+                text-decoration: none;
                 border: none !important;
-                padding: 3px 2px;
-                line-height: 1.4;
-                transition: background 0.1s;
+                padding: 4px 4px;
+                line-height: 1.45;
+                transition: color 0.12s, background 0.12s;
                 white-space: normal;
                 word-break: break-word;
+                border-radius: 2px;
             }
 
             .toc-link:hover {
-                background: #000080;
-                color: #ffffff !important;
-                text-decoration: none;
+                color: var(--ice, #7dd3fc) !important;
+                background: rgba(125,211,252,0.06);
                 border: none !important;
             }
 
             .toc-link.toc-active {
-                font-weight: bold;
-                color: #000080 !important;
-                text-decoration: none;
-                background: rgba(0,0,128,0.08);
+                font-weight: 500;
+                color: var(--ice, #7dd3fc) !important;
+                background: rgba(125,211,252,0.08);
             }
 
             .toc-h3 .toc-link {
                 padding-left: 12px;
-                font-size: 11px;
-                color: #444;
+                font-size: 10px;
+                color: var(--text-dim, #3d6480);
             }
 
             .toc-h3 .toc-link::before {
                 content: '╰ ';
-                opacity: 0.45;
+                opacity: 0.5;
                 font-size: 9px;
             }
 
@@ -129,10 +130,34 @@
             .toc-progress {
                 position: absolute;
                 left: 0;
-                top: 22px;
+                top: 24px;
                 width: 2px;
-                background: #000080;
+                background: var(--teal, #2dd4bf);
                 transition: height 0.12s linear;
+                opacity: 0.7;
+            }
+
+            /* Back button inside inline TOC sidebar */
+            .toc-back-inline {
+                display: block;
+                width: calc(100% - 16px);
+                margin: 6px 8px 8px;
+                padding: 5px 8px;
+                font-family: 'JetBrains Mono', 'Courier New', monospace;
+                font-size: 10px;
+                color: var(--text-muted, #7ea8c9);
+                background: transparent;
+                border: 1px solid rgba(125,211,252,0.18);
+                border-radius: 2px;
+                cursor: pointer;
+                text-align: left;
+                letter-spacing: 0.05em;
+                transition: color 0.12s, background 0.12s, border-color 0.12s;
+            }
+            .toc-back-inline:hover {
+                color: var(--ice, #7dd3fc);
+                background: rgba(125,211,252,0.06);
+                border-color: rgba(125,211,252,0.32);
             }
 
             /* Floating back button on standalone post pages */
@@ -141,20 +166,25 @@
                 bottom: 20px;
                 left: 20px;
                 z-index: 300;
-                font-family: Arial, 'Tahoma', sans-serif;
-                font-size: 11px;
-                font-weight: bold;
-                color: #000000;
-                background: #d4d0c8;
-                box-shadow: inset -1px -1px #0a0a0a, inset 1px 1px #fff,
-                            inset -2px -2px #808080, inset 2px 2px #dfdfdf;
-                border: none;
-                padding: 4px 14px;
+                font-family: 'JetBrains Mono', 'Courier New', monospace;
+                font-size: 10px;
+                font-weight: 500;
+                letter-spacing: 0.08em;
+                color: var(--text-muted, #7ea8c9);
+                background: var(--bg-panel, #0d1929);
+                border: 1px solid rgba(125,211,252,0.28);
+                border-radius: 3px;
+                padding: 6px 16px;
                 cursor: pointer;
                 text-decoration: none;
                 display: inline-block;
+                box-shadow: 0 6px 24px rgba(0,0,0,0.5);
+                transition: all 0.15s;
             }
-            .toc-back-btn:hover { background: #c8c4bc; }
+            .toc-back-btn:hover {
+                color: var(--ice, #7dd3fc);
+                box-shadow: 0 6px 24px rgba(0,0,0,0.5), 0 0 14px rgba(125,211,252,0.15);
+            }
         `;
         document.head.appendChild(style);
     }
@@ -274,6 +304,24 @@
             panelFeed.scrollBy({ top: offset, behavior: 'smooth' });
         });
         nav.appendChild(ul);
+
+        // Back button inside sidebar, below the TOC links
+        const backBtn = document.createElement('button');
+        backBtn.className = 'toc-back-inline';
+        backBtn.textContent = '← back to stream';
+        backBtn.addEventListener('click', () => {
+            // Find the last .back-btn-float (script.js appends its dynamic one to body)
+            const btns = document.querySelectorAll('.back-btn-float');
+            const target = btns[btns.length - 1];
+            if (target) {
+                target.style.display = 'block'; // briefly re-show so its click handler fires
+                target.click();
+            }
+        });
+        nav.appendChild(backBtn);
+
+        // Hide all floating back buttons — the sidebar button replaces them
+        document.querySelectorAll('.back-btn-float').forEach(b => b.style.display = 'none');
 
         // Insert sidebar into the post-page and activate grid layout
         postPage.appendChild(nav);

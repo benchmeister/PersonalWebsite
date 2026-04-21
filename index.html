@@ -11,252 +11,239 @@
 </head>
 <body>
 
-    <!-- Top Bar -->
-    <header class="topbar">
-        <div class="topbar-left">
-            <span class="topbar-live">
-                <span class="topbar-dot"></span>
-                LIVE
-            </span>
-            <span class="topbar-sep">│</span>
-            <span class="topbar-host">benchmeister@kali:~$</span>
-            <span class="topbar-sep">·</span>
-            <span class="topbar-path">/var/log/posts</span>
+<canvas id="aurora-canvas"></canvas>
+
+<!-- ── Top Bar ──────────────────────────────────────────────── -->
+<header class="topbar">
+    <div class="topbar-left">
+        <span class="topbar-live"><span class="topbar-dot"></span>LIVE</span>
+        <span class="topbar-sep">│</span>
+        <span class="topbar-host">benchmeister@kali:~$</span>
+        <span class="topbar-sep">·</span>
+        <span class="topbar-path">/var/log/posts</span>
+    </div>
+    <div class="topbar-right">
+        <span class="topbar-item"><span class="topbar-num">2</span> entries</span>
+        <span class="topbar-sep">·</span>
+        <span class="topbar-item"><span class="topbar-num ok">0</span> errors</span>
+        <span class="topbar-sep">·</span>
+        <span class="topbar-item">uptime <span class="topbar-num" id="uptime-val">—</span></span>
+    </div>
+</header>
+
+<!-- ── Workspace ────────────────────────────────────────────── -->
+<div class="workspace">
+
+    <!-- ══ LEFT SIDEBAR ══════════════════════════════════════════ -->
+    <aside class="panel panel-sidebar">
+        <div class="panel-header">
+            <span class="panel-title">ANALYST NODE</span>
+            <div class="panel-ctrls">
+                <button class="panel-ctrl"></button>
+                <button class="panel-ctrl"></button>
+                <button class="panel-ctrl ctrl-close"></button>
+            </div>
         </div>
-        <div class="topbar-right">
-            <span class="topbar-item"><span class="topbar-num">2</span> entries</span>
-            <span class="topbar-sep">·</span>
-            <span class="topbar-item"><span class="topbar-num ok">0</span> errors</span>
-            <span class="topbar-sep">·</span>
-            <span class="topbar-item">uptime <span class="topbar-num" id="uptime-val">—</span></span>
+
+        <!-- Profile ─────────────────────────────────────────── -->
+        <div class="profile-avatar-wrap">
+            <div class="profile-frame">
+                <img src="images/profilepic.jpeg" class="profile-photo" alt="Wei Feng Chua">
+            </div>
         </div>
-    </header>
 
-    <!-- Three-panel workspace -->
-    <div class="workspace">
+        <div class="profile-id">
+            <h2 class="profile-name">Wei Feng Chua</h2>
+            <div class="profile-role">Security Testing & Red Team @ Ensign</div>
+            <div class="profile-tags">
+                <span class="profile-tag tag-red">RED TEAM</span>
+                <span class="profile-tag tag-blue">THREAT HUNT</span>
+                <span class="profile-tag tag-cyan">THREAT INTEL</span>
+            </div>
+        </div>
 
-        <!-- LEFT: Lens Panel -->
-        <aside class="panel panel-lens">
-            <div class="panel-header">
-                <span class="panel-title">STREAM FILTER</span>
+        <!-- About Me button ──────────────────────────────────── -->
+        <div class="sidebar-nav">
+            <button class="sidebar-nav-btn" id="about-me-btn">
+                <span class="sidebar-nav-icon">◈</span>
+                <span class="sidebar-nav-label">ABOUT ME</span>
+                <span class="sidebar-nav-arrow">→</span>
+            </button>
+        </div>
+
+        <div class="sidebar-rule"></div>
+
+        <!-- Endpoints ───────────────────────────────────────── -->
+        <div class="profile-block">
+            <div class="profile-block-label">ENDPOINTS</div>
+            <div class="endpoint-list">
+                <a href="https://www.linkedin.com/in/weifengchua/" target="_blank" class="endpoint-item">
+                    <span class="endpoint-dot"></span>
+                    <span class="endpoint-text">linkedin.com/in/weifengchua</span>
+                    <span class="endpoint-arrow">↗</span>
+                </a>
+                <a href="https://github.com/benchmeister" target="_blank" class="endpoint-item">
+                    <span class="endpoint-dot"></span>
+                    <span class="endpoint-text">github.com/benchmeister</span>
+                    <span class="endpoint-arrow">↗</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="sidebar-rule"></div>
+
+        <!-- Certifications ──────────────────────────────────── -->
+        <div class="profile-block" style="margin-bottom: 12px;">
+            <div class="profile-block-label">CONNECTED NODES</div>
+            <div class="peer-list">
+                <div class="peer-item">
+                    <span class="peer-dot"></span>
+                    <span class="peer-id">OSEP</span>
+                    <span class="peer-desc">Offensive Security</span>
+                </div>
+                <div class="peer-item">
+                    <span class="peer-dot"></span>
+                    <span class="peer-id">OSCP</span>
+                    <span class="peer-desc">Offensive Security</span>
+                </div>
+                <div class="peer-item">
+                    <span class="peer-dot"></span>
+                    <span class="peer-id">OSWP</span>
+                    <span class="peer-desc">Offensive Security</span>
+                </div>
+                <div class="peer-item">
+                    <span class="peer-dot"></span>
+                    <span class="peer-id">eJPT</span>
+                    <span class="peer-desc">INE</span>
+                </div>
+                <div class="peer-item">
+                    <span class="peer-dot"></span>
+                    <span class="peer-id">CEH</span>
+                    <span class="peer-desc">EC-Council</span>
+                </div>
+            </div>
+        </div>
+
+    </aside>
+
+    <!-- ══ MAIN FEED ═════════════════════════════════════════════ -->
+    <main class="panel panel-feed" id="panel-feed">
+        <div class="panel-header">
+            <span class="panel-title">LOG STREAM</span>
+            <div class="feed-hdr-right">
+                <span class="feed-counter"><span id="visible-count">2</span> visible</span>
                 <div class="panel-ctrls">
-                    <button class="panel-ctrl">_</button>
-                    <button class="panel-ctrl">□</button>
-                    <button class="panel-ctrl ctrl-close">×</button>
+                    <button class="panel-ctrl"></button>
+                    <button class="panel-ctrl"></button>
+                    <button class="panel-ctrl ctrl-close"></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Index view ────────────────────────────────────────── -->
+        <div id="index-view">
+
+            <!-- Filter bar -->
+            <div class="feed-filter-bar">
+                <div class="feed-filter-search">
+                    <span class="feed-search-icon">⌕</span>
+                    <input type="text" id="stream-search" class="feed-search-input" placeholder="search entries…">
+                </div>
+                <div class="feed-filter-cats">
+                    <button class="lens-btn active" data-filter="all">
+                        <span class="lens-dot dot-all"></span>ALL<span class="lens-count">2</span>
+                    </button>
+                    <button class="lens-btn" data-filter="certs">
+                        <span class="lens-dot dot-certs"></span>CERTS<span class="lens-count">1</span>
+                    </button>
+                    <button class="lens-btn" data-filter="deploy">
+                        <span class="lens-dot dot-deploy"></span>DEPLOY<span class="lens-count">0</span>
+                    </button>
+                    <button class="lens-btn" data-filter="ti">
+                        <span class="lens-dot dot-ti"></span>INTEL<span class="lens-count">1</span>
+                    </button>
                 </div>
             </div>
 
-            <div class="lens-search">
-                <span class="lens-search-icon">⌕</span>
-                <input type="text" id="stream-search" class="lens-input" placeholder="filter entries…">
+            <div class="feed-cols">
+                <span>TIMESTAMP</span>
+                <span>SEVERITY</span>
+                <span>LOG ID</span>
+                <span>LOG DATA</span>
             </div>
 
-            <div class="lens-label">CATEGORY</div>
-            <div class="lens-list" id="lens-list">
-                <button class="lens-btn active" data-filter="all">
-                    <span class="lens-dot dot-all"></span>
-                    <span class="lens-name">ALL</span>
-                    <span class="lens-count" id="count-all">2</span>
-                </button>
-                <button class="lens-btn" data-filter="certs">
-                    <span class="lens-dot dot-certs"></span>
-                    <span class="lens-name">CERTS</span>
-                    <span class="lens-count" id="count-certs">1</span>
-                </button>
-                <button class="lens-btn" data-filter="deploy">
-                    <span class="lens-dot dot-deploy"></span>
-                    <span class="lens-name">DEPLOY</span>
-                    <span class="lens-count" id="count-deploy">0</span>
-                </button>
-                <button class="lens-btn" data-filter="ti">
-                    <span class="lens-dot dot-ti"></span>
-                    <span class="lens-name">THREAT INTEL</span>
-                    <span class="lens-count" id="count-ti">1</span>
-                </button>
-            </div>
-
-            <div class="lens-divider"></div>
-
-            <div class="lens-label">STATS</div>
-            <div class="lens-stats">
-                <div class="lens-stat">
-                    <div class="lens-stat-val">2</div>
-                    <div class="lens-stat-label">TOTAL</div>
+            <!-- Live terminal entry -->
+            <div class="feed-live-entry">
+                <div class="feed-row feed-live-row">
+                    <span class="feed-ts feed-live-ts"><span class="feed-live-dot"></span>LIVE</span>
+                    <span class="feed-sev sev-live">SYS</span>
+                    <span class="feed-id">00000000</span>
+                    <span class="feed-msg feed-live-label">root@kali — active session</span>
                 </div>
-                <div class="lens-stat">
-                    <div class="lens-stat-val" id="stat-latest">—</div>
-                    <div class="lens-stat-label">LATEST</div>
+                <div class="feed-live-output">
+                    <div id="term-body"></div>
                 </div>
             </div>
-            <div class="lens-divider"></div>
 
-            <!-- Fake terminal -->
-            <div class="term-widget">
-                <div class="term-titlebar">
-                    <span class="term-trafficlight tl-red"></span>
-                    <span class="term-trafficlight tl-yellow"></span>
-                    <span class="term-trafficlight tl-green"></span>
-                    <span class="term-titlebar-label">root@kali — bash</span>
-                </div>
-                <div class="term-body" id="term-body"></div>
-            </div>
+            <div class="feed-list" id="feed-list">
 
-        </aside>
-
-        <!-- CENTER: Feed Panel -->
-        <main class="panel panel-feed" id="panel-feed">
-            <div class="panel-header">
-                <span class="panel-title">LOG STREAM</span>
-                <div class="feed-hdr-right">
-                    <span class="feed-counter"><span id="visible-count">1</span> visible</span>
-                    <div class="panel-ctrls">
-                        <button class="panel-ctrl">_</button>
-                        <button class="panel-ctrl">□</button>
-                        <button class="panel-ctrl ctrl-close">×</button>
+                <div class="feed-entry" data-post="post-2" data-category="ti">
+                    <div class="feed-row">
+                        <span class="feed-ts">2026-04-15</span>
+                        <span class="feed-sev sev-ti">INTEL</span>
+                        <span class="feed-id">b7d3a21f</span>
+                        <span class="feed-msg">Why UNC3886 Is So Hard to Detect (And What It Teaches Us)</span>
                     </div>
-                </div>
-            </div>
-
-            <!-- Index view -->
-            <div id="index-view">
-                <div class="feed-intro">
-                    <p class="feed-lead">First time committing research to disk — no more procrastination.</p>
-                    <p class="feed-sub">Covering CTF writeups, offensive security, certs, and the occasional deep dive. Scroll the stream or filter by category.</p>
-                </div>
-
-                <div class="feed-cols">
-                    <span class="col-ts">TIMESTAMP</span>
-                    <span class="col-sev">SEVERITY</span>
-                    <span class="col-hash">LOG ID</span>
-                    <span class="col-msg">LOG DATA</span>
-                </div>
-
-                <div class="feed-list" id="feed-list">
-
-                    <div class="feed-entry" data-post="post-2" data-category="ti">
-                        <div class="feed-row">
-                            <span class="feed-ts">2026-04-15</span>
-                            <span class="feed-sev sev-ti">INTEL</span>
-                            <span class="feed-id">b7d3a21f</span>
-                            <span class="feed-msg">Why UNC3886 Is So Hard to Detect (And What It Teaches Us)</span>
-                        </div>
-                        <div class="feed-expand">
-                            <div class="feed-expand-body">
-                                <p class="feed-summary">AI-assisted threat intel deep dive on UNC3886 — hypervisor implants, CVE chaining from FortiOS to ESXi, and C2 via GitHub &amp; Google Drive.</p>
-                                <a href="posts/post-2.html" class="feed-read">→ READ ENTRY</a>
-                            </div>
+                    <div class="feed-expand">
+                        <div class="feed-expand-body">
+                            <p class="feed-summary">AI-assisted threat intel deep dive on UNC3886 — hypervisor implants, CVE chaining from FortiOS to ESXi, and C2 via GitHub &amp; Google Drive.</p>
+                            <a href="posts/post-2.html" class="feed-read">→ READ ENTRY</a>
                         </div>
                     </div>
+                </div>
 
-                    <div class="feed-entry" data-post="post-1" data-category="certs">
-                        <div class="feed-row">
-                            <span class="feed-ts">2024-08-24</span>
-                            <span class="feed-sev sev-certs">CERT</span>
-                            <span class="feed-id">94ecf35e</span>
-                            <span class="feed-msg">I Passed OSCP: My Journey &amp; Lessons Learnt</span>
+                <div class="feed-entry" data-post="post-1" data-category="certs">
+                    <div class="feed-row">
+                        <span class="feed-ts">2024-08-24</span>
+                        <span class="feed-sev sev-certs">CERT</span>
+                        <span class="feed-id">94ecf35e</span>
+                        <span class="feed-msg">I Passed OSCP: My Journey &amp; Lessons Learnt</span>
+                    </div>
+                    <div class="feed-expand">
+                        <div class="feed-expand-body">
+                            <p class="feed-summary">Passed OSCP with 70 points — AD set + 1 standalone. Covering methodology, tools like Ligolo &amp; ConPtyShell, and key principles.</p>
+                            <a href="posts/post-1.html" class="feed-read">→ READ ENTRY</a>
                         </div>
-                        <div class="feed-expand">
-                            <div class="feed-expand-body">
-                                <p class="feed-summary">Passed OSCP with 70 points — AD set + 1 standalone. Covering methodology, tools like Ligolo &amp; ConPtyShell, and key principles.</p>
-                                <a href="posts/post-1.html" class="feed-read">→ READ ENTRY</a>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-
-            <!-- Post view (hidden by default) -->
-            <div id="post-view" style="display:none;">
-                <button class="back-btn" id="back-to-index">← back to stream</button>
-                <div id="post-content-container"></div>
-            </div>
-        </main>
-
-        <!-- RIGHT: Profile Panel -->
-        <aside class="panel panel-profile">
-            <div class="panel-header">
-                <span class="panel-title">NODE INFO</span>
-                <div class="panel-ctrls">
-                    <button class="panel-ctrl">_</button>
-                    <button class="panel-ctrl">□</button>
-                    <button class="panel-ctrl ctrl-close">×</button>
-                </div>
-            </div>
-
-            <div class="profile-avatar-wrap">
-                <div class="profile-frame">
-                    <img src="images/profilepic.jpeg" class="profile-photo">
-                    <div class="profile-ring"></div>
-                </div>
-            </div>
-
-            <div class="profile-id">
-                <h2 class="profile-name">Wei Feng Chua</h2>
-                <div class="profile-role">Security Testing & Red Team @ Ensign Infosecurity</div>
-                <div class="profile-tags">
-                    <span class="profile-tag tag-red">RED TEAM</span>
-                    <span class="profile-tag tag-blue">THREAT HUNT</span>
-                    <span class="profile-tag tag-cyan">THREAT INTEL</span>
-                </div>
-            </div>
-
-            <div class="profile-bio">
-                <p>Hey everyone! I'm a Y2 Information Security currently studying in SIT, and interning at Ensign.</p>
-                <p>Part of N0H4TS &amp; the previous CYBERH4TS Vice President.</p>
-            </div>
-
-            <div class="profile-block">
-                <div class="profile-block-label">ENDPOINTS</div>
-                <div class="endpoint-list">
-                    <a href="https://www.linkedin.com/in/weifengchua/" target="_blank" class="endpoint-item">
-                        <span class="endpoint-dot"></span>
-                        <span class="endpoint-text">linkedin.com/in/weifengchua</span>
-                        <span class="endpoint-arrow">↗</span>
-                    </a>
-                    <a href="https://github.com/benchmeister" target="_blank" class="endpoint-item">
-                        <span class="endpoint-dot"></span>
-                        <span class="endpoint-text">github.com/benchmeister</span>
-                        <span class="endpoint-arrow">↗</span>
-                    </a>
-                </div>
-            </div>
-
-            <div class="profile-block">
-                <div class="profile-block-label">CONNECTED NODES</div>
-                <div class="peer-list">
-                    <div class="peer-item">
-                        <span class="peer-dot"></span>
-                        <span class="peer-id">OSEP</span>
-                        <span class="peer-desc">Offensive Security</span>
-                    </div>
-                    <div class="peer-item">
-                        <span class="peer-dot"></span>
-                        <span class="peer-id">OSCP</span>
-                        <span class="peer-desc">Offensive Security</span>
-                    </div>
-                    <div class="peer-item">
-                        <span class="peer-dot"></span>
-                        <span class="peer-id">OSWP</span>
-                        <span class="peer-desc">Offensive Security</span>
-                    </div>
-                    <div class="peer-item">
-                        <span class="peer-dot"></span>
-                        <span class="peer-id">eJPT</span>
-                        <span class="peer-desc">INE</span>
-                    </div>
-                    <div class="peer-item">
-                        <span class="peer-dot"></span>
-                        <span class="peer-id">CEH</span>
-                        <span class="peer-desc">EC-Council</span>
                     </div>
                 </div>
+
             </div>
-        </aside>
+        </div><!-- /index-view -->
 
-    </div><!-- /workspace -->
+        <!-- Post / About view (hidden by default) -->
+        <div id="post-view" style="display:none;">
+            <button class="back-btn" id="back-to-index">← back to stream</button>
+            <div id="post-content-container"></div>
+        </div>
 
-    <script src="posts.js"></script>
-    <script src="script.js"></script>
+    </main>
+
+</div><!-- /workspace -->
+
+<!-- Floating back button -->
+<button class="back-btn-float" style="display:none;">← back to stream</button>
+
+<script src="posts.js"></script>
+<script src="script.js"></script>
+<script src="shaders.js"></script>
+<script src="toc.js"></script>
+<script>
+    // ── About Me button ────────────────────────────────────────────
+    document.getElementById('about-me-btn').addEventListener('click', () => {
+        if (typeof loadPost === 'function') {
+            loadPost('about.html');
+        }
+    });
+</script>
 </body>
 </html>
